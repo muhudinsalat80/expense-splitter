@@ -1,61 +1,62 @@
 import React, { useState } from "react";
 import "./App.css";
 
-// Convert Ksh string/number to cents (integer)
+
 const toCents = (value) => {
   const num = parseFloat(value);
   if (isNaN(num)) return 0;
   return Math.round(num * 100);
 };
 
-// Convert cents back to Ksh format
+
 const formatKsh = (cents) => {
   return `Ksh ${(cents / 100).toFixed(2)}`;
 };
-// Main App Component
+
+
 function App() {
 
-  // store group members in an array
+  
   const [members, setMembers] = useState([]);
   
-  // store what user is typing in the input box
+ 
   const [memberName, setMemberName] = useState("");
 
-  // store the  budget input as a string from the input budget field
+ 
 
   const [budget, setBudget] = useState(""); // user input (string)
 
-  // store contributions using object
+  
 
   const [contributions, setContributions] = useState({});
 
-  // controlls the appearance of the summary section
+ 
 
   const [showSummary, setShowSummary] = useState(false);
 
-  // add members
+ 
 
   const addMember = () => {
     const name = memberName.trim();
 
-    // prevent adding empty or duplicate names
+    
 
     if (!name || members.includes(name)) return;
 
 
-    //add new member to members array
+    
     setMembers([...members, name]);
 
-    //create new member contribution record
+    
 
     setContributions({ ...contributions, [name]: 0 });
 
-    //clear input field
+  
 
     setMemberName("");
   };
 
-  // update contributions
+  
 
   const handleContributionChange = (member, value) => {
     setContributions({
@@ -64,24 +65,23 @@ function App() {
     });
   };
 
-  // convert budget to cents
+  
 
   const budgetCents = toCents(budget);
 
-  //adds total contributions
 
   const totalContributedCents = Object.values(contributions).reduce(
     (sum, v) => sum + v,
     0
   );
 
-  // calculate equal share per person
+  
 
   const shareCents = members.length
     ? Math.round(budgetCents / members.length)
     : 0;
 
-  // balances array
+  
 
   const balances = members.map((member) => {
     const paid = contributions[member] || 0;
@@ -89,23 +89,23 @@ function App() {
     return { member, paid, balance };
   });
 
-  // generate settlement transactions
+  
 
   const generateSettlement = () => {
 
-    // positive balance 
+    
 
     let creditors = balances
       .filter((b) => b.balance > 0)
       .map((b) => ({ ...b }));
 
-    // people with negative balance 
+    
 
     let debtors = balances
       .filter((b) => b.balance < 0)
       .map((b) => ({ ...b }));
 
-    // sort just to keep output stable
+    
 
     creditors.sort((a, b) => b.balance - a.balance);
     debtors.sort((a, b) => a.balance - b.balance);
@@ -204,7 +204,7 @@ function App() {
       </div>
 
       {/* ENTER CONTRIBUTIONS */}
-      
+
       <div>
         <h2>Enter Contributions</h2>
 
